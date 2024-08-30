@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: ['almalinux:8', 'almalinux:9']
+        os: ['almalinux:9', 'almalinux:8']
 
     steps:
     - name: Checkout code
@@ -44,6 +44,7 @@ jobs:
           dnf install -y \
             screen \
             wget \
+            m4 \
             rpmdevtools \
             rpm-build \
             $(if [[ ${{ matrix.os }} == 'almalinux:9' ]]; then echo 'autoconf-latest.noarch'; else echo 'autoconf2.7x'; fi) \

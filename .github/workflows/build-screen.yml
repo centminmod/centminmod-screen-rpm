@@ -31,8 +31,18 @@ jobs:
           dnf install -y epel-release &&
           if [[ ${{ matrix.os }} == 'almalinux:8' ]]; then
             dnf config-manager --set-enabled powertools;
+            export PATH=/usr/bin:$PATH;
+            export AUTOCONF=/usr/bin/autoconf2.7x;
+            export AUTOHEADER=/usr/bin/autoheader2.7x;
+            export AUTOM4TE=/usr/bin/autom4te2.7x;
+            export M4=/usr/bin/m4;
           else
             dnf config-manager --set-enabled crb;
+            export PATH=/opt/rh/autoconf271/bin:$PATH;
+            export AUTOCONF=/opt/rh/autoconf271/bin/autoconf;
+            export AUTOHEADER=/opt/rh/autoconf271/bin/autoheader;
+            export AUTOM4TE=/opt/rh/autoconf271/bin/autom4te;
+            export M4=/opt/rh/autoconf271/bin/m4;
           fi &&
           dnf groupinstall 'Development Tools' -y &&
           dnf install -y \
@@ -74,7 +84,7 @@ jobs:
           mkdir -p /home/screentmp &&
           chmod 1777 /home/screentmp &&
           export TMPDIR=/home/screentmp &&
-          export PATH=/opt/rh/gcc-toolset-13/enable:$PATH &&
+          source /opt/rh/gcc-toolset-13/enable &&
           rpmbuild -ba ~/rpmbuild/SPECS/screen.spec &&
           cp ~/rpmbuild/RPMS/x86_64/screen-*.rpm /workspace/
         "

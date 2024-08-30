@@ -32,8 +32,8 @@ jobs:
           if [[ ${{ matrix.os }} == 'almalinux:8' ]]; then
             dnf config-manager --set-enabled powertools;
             export PATH=/usr/bin:$PATH;
-            export AUTOCONF=/usr/bin/autoconf2.7x;
-            export AUTOHEADER=/usr/bin/autoheader2.7x;
+            export AUTOCONF=/usr/bin/autoconf27;
+            export AUTOHEADER=/usr/bin/autoheader27;
           else
             dnf config-manager --set-enabled crb;
             export PATH=/opt/rh/autoconf271/bin:$PATH;

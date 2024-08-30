@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: ['almalinux:9', 'almalinux:8']
+        os: ['almalinux:9', 'almalinux:9']
 
     steps:
     - name: Checkout code
@@ -82,7 +82,7 @@ jobs:
           chmod 1777 /home/screentmp &&
           export TMPDIR=/home/screentmp &&
           source /opt/rh/gcc-toolset-13/enable &&
-          rpmbuild -ba ~/rpmbuild/SPECS/screen.spec &&
+          time rpmbuild -ba ~/rpmbuild/SPECS/screen.spec &&
           cp ~/rpmbuild/RPMS/x86_64/screen-*.rpm /workspace/
         "
 

@@ -36,6 +36,7 @@ jobs:
           fi &&
           dnf groupinstall 'Development Tools' -y &&
           dnf install -y \
+            screen \
             rpmdevtools \
             rpm-build \
             $(if [[ ${{ matrix.os }} == 'almalinux:9' ]]; then echo 'autoconf-latest.noarch'; else echo 'autoconf2.7x'; fi) \

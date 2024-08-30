@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: ['almalinux:8', 'almalinux:9']
+        os: ['almalinux:9', 'almalinux:8']
 
     steps:
     - name: Checkout code
@@ -34,11 +34,15 @@ jobs:
             export PATH=/usr/bin:$PATH;
             export AUTOCONF=/usr/bin/autoconf27;
             export AUTOHEADER=/usr/bin/autoheader27;
+            export AUTOM4TE=/usr/bin/autom4te27;
+            export AUTORECONF=/usr/bin/autoreconf27;
           else
             dnf config-manager --set-enabled crb;
             export PATH=/opt/rh/autoconf271/bin:$PATH;
             export AUTOCONF=/opt/rh/autoconf271/bin/autoconf;
             export AUTOHEADER=/opt/rh/autoconf271/bin/autoheader;
+            export AUTOM4TE=/opt/rh/autoconf271/bin/autom4te;
+            export AUTORECONF=/opt/rh/autoconf271/bin/autoreconf;
           fi &&
           dnf groupinstall 'Development Tools' -y &&
           dnf install -y \

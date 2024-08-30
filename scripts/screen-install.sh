@@ -2,7 +2,7 @@
 
 # Function to detect RHEL-based OS version using PLATFORM_ID and set the appropriate URL
 detect_os() {
-    PLATFORM_ID=$(grep "^PLATFORM_ID=" /etc/os-release | cut -d ':' -f2)
+    PLATFORM_ID=$(grep "^PLATFORM_ID=" /etc/os-release | cut -d ':' -f2 | tr -d '"')
 
     if [ "$PLATFORM_ID" == "el8" ]; then
         OS_VERSION="el8"

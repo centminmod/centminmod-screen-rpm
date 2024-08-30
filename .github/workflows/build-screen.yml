@@ -41,6 +41,10 @@ jobs:
             rpmdevtools \
             rpm-build \
             $(if [[ ${{ matrix.os }} == 'almalinux:9' ]]; then echo 'autoconf-latest.noarch'; else echo 'autoconf2.7x'; fi) \
+            ncurses-devel \
+            pam-devel \
+            gettext-devel \
+            systemd-devel \
             gcc-toolset-13-annobin-annocheck \
             gcc-toolset-13-annobin-docs.noarch \
             gcc-toolset-13-annobin-plugin-gcc \

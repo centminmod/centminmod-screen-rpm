@@ -15,16 +15,17 @@ jobs:
 
     strategy:
       matrix:
-        os: [almalinux8, almalinux9]
+        os: [almalinux:8, almalinux:9]  # Use the official AlmaLinux images
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up AlmaLinux container
       uses: docker/setup-qemu-action@v2
       with:
         image: ${{ matrix.os }}
+        platforms: linux/amd64
 
     - name: Install required packages
       run: |
@@ -55,7 +56,7 @@ jobs:
           gcc-toolset-13-libtsan-devel \
           gcc-toolset-13-libubsan-devel \
           gcc-toolset-13-runtime
-      if: matrix.os == 'almalinux9'
+      if: matrix.os == 'almalinux:9'
 
     - name: Install required packages for EL8
       run: |
@@ -86,7 +87,7 @@ jobs:
           gcc-toolset-13-libtsan-devel \
           gcc-toolset-13-libubsan-devel \
           gcc-toolset-13-runtime
-      if: matrix.os == 'almalinux8'
+      if: matrix.os == 'almalinux:8'
 
     - name: Set up RPM build environment
       run: |
@@ -103,7 +104,7 @@ jobs:
         export PATH=/opt/rh/autoconf271/bin:$PATH
         source /opt/rh/gcc-toolset-13/enable
         rpmbuild -ba ~/rpmbuild/SPECS/screen.spec
-      if: matrix.os == 'almalinux9'
+      if: matrix.os == 'almalinux:9'
 
     - name: Build RPM for EL8
       run: |
@@ -113,10 +114,10 @@ jobs:
         export PATH=/usr/bin:$PATH
         source /opt/rh/gcc-toolset-13/enable
         rpmbuild -ba ~/rpmbuild/SPECS/screen.spec
-      if: matrix.os == 'almalinux8'
+      if: matrix.os == 'almalinux:8'
 
     - name: Upload RPM
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: screen-rpm-${{ matrix.os }}
         path: ~/rpmbuild/RPMS/x86_64/screen-*.rpm

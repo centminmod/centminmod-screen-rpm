@@ -28,8 +28,8 @@ jobs:
       run: |
         docker pull ${{ matrix.os }}
         docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ${{ matrix.os }} /bin/bash -c "
-          sudo dnf groupinstall 'Development Tools' -y &&
-          sudo dnf install -y \
+          dnf groupinstall 'Development Tools' -y &&
+          dnf install -y \
             rpmdevtools \
             rpm-build \
             $(if [[ ${{ matrix.os }} == 'almalinux:9' ]]; then echo 'autoconf-latest.noarch'; else echo 'autoconf2.7x'; fi) \

@@ -1,15 +1,17 @@
 #!/bin/bash
 
-# Function to detect RHEL-based OS version and set the appropriate URL and package name
+# Function to detect RHEL-based OS version using PLATFORM_ID and set the appropriate URL
 detect_os() {
-    if grep -q "release 8" /etc/os-release; then
+    PLATFORM_ID=$(grep "^PLATFORM_ID=" /etc/os-release | cut -d ':' -f2)
+
+    if [ "$PLATFORM_ID" == "el8" ]; then
         OS_VERSION="el8"
         PACKAGE_URL="https://parts.centminmod.com/centminmodparts/screen/el8/screen-5.0.0-1.el8.x86_64.rpm"
-    elif grep -q "release 9" /etc/os-release; then
+    elif [ "$PLATFORM_ID" == "el9" ]; then
         OS_VERSION="el9"
         PACKAGE_URL="https://parts.centminmod.com/centminmodparts/screen/el9/screen-5.0.0-1.el9.x86_64.rpm"
     else
-        echo "Unsupported OS version. This script only supports RHEL-based OS with version 8 or 9."
+        echo "Unsupported OS version. This script only supports RHEL-based OS with platform ID 'el8' or 'el9'."
         exit 1
     fi
 }

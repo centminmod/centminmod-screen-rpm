@@ -86,12 +86,14 @@ jobs:
           cp ~/rpmbuild/RPMS/x86_64/screen-*.rpm /workspace/
         "
 
+    - name: Set custom artifact name
+      run: echo "ARTIFACT_NAME=screen-rpm-${{ matrix.os }}" >> $GITHUB_ENV
+
     - name: Upload RPM
       uses: actions/upload-artifact@v4
       with:
-        name: screen-rpm-${{ matrix.os//:/- }}
+        name: ${{ env.ARTIFACT_NAME }}
         path: screen-*.rpm
         if-no-files-found: warn
         compression-level: 0
         overwrite: false
-

@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: ['almalinux:9', 'almalinux:9']
+        os: ['almalinux:8', 'almalinux:9']
 
     steps:
     - name: Checkout code
@@ -89,5 +89,9 @@ jobs:
     - name: Upload RPM
       uses: actions/upload-artifact@v4
       with:
-        name: screen-rpm-${{ matrix.os }}
+        name: screen-rpm-${{ matrix.os//:/- }}
         path: screen-*.rpm
+        if-no-files-found: warn
+        compression-level: 0
+        overwrite: false
+

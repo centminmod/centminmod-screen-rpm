@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [almalinux:8, almalinux:9]  # Use the official AlmaLinux images
+        os: ['almalinux:8', 'almalinux:9']
 
     steps:
     - name: Checkout code

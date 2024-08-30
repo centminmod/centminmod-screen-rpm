@@ -1,0 +1,121 @@
+name: Build Screen RPM
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [almalinux8, almalinux9]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up AlmaLinux container
+      uses: docker/setup-qemu-action@v2
+      with:
+        image: ${{ matrix.os }}
+
+    - name: Install required packages
+      run: |
+        sudo dnf groupinstall "Development Tools" -y
+        sudo dnf install -y \
+          rpmdevtools \
+          rpm-build \
+          autoconf-latest.noarch \
+          gcc-toolset-13-annobin-annocheck \
+          gcc-toolset-13-annobin-docs.noarch \
+          gcc-toolset-13-annobin-plugin-gcc \
+          gcc-toolset-13-binutils \
+          gcc-toolset-13-binutils-devel \
+          gcc-toolset-13-dwz \
+          gcc-toolset-13-gcc \
+          gcc-toolset-13-gcc-c++ \
+          gcc-toolset-13-gcc-gfortran \
+          gcc-toolset-13-gdb \
+          gcc-toolset-13-libasan-devel \
+          gcc-toolset-13-libatomic-devel \
+          gcc-toolset-13-libgccjit \
+          gcc-toolset-13-libgccjit-devel \
+          gcc-toolset-13-libgccjit-docs \
+          gcc-toolset-13-libitm-devel \
+          gcc-toolset-13-liblsan-devel \
+          gcc-toolset-13-libquadmath-devel \
+          gcc-toolset-13-libstdc++-devel \
+          gcc-toolset-13-libtsan-devel \
+          gcc-toolset-13-libubsan-devel \
+          gcc-toolset-13-runtime
+      if: matrix.os == 'almalinux9'
+
+    - name: Install required packages for EL8
+      run: |
+        sudo dnf groupinstall "Development Tools" -y
+        sudo dnf install -y \
+          rpmdevtools \
+          rpm-build \
+          autoconf2.7x \
+          gcc-toolset-13-annobin-annocheck \
+          gcc-toolset-13-annobin-docs.noarch \
+          gcc-toolset-13-annobin-plugin-gcc \
+          gcc-toolset-13-binutils \
+          gcc-toolset-13-binutils-devel \
+          gcc-toolset-13-dwz \
+          gcc-toolset-13-gcc \
+          gcc-toolset-13-gcc-c++ \
+          gcc-toolset-13-gcc-gfortran \
+          gcc-toolset-13-gdb \
+          gcc-toolset-13-libasan-devel \
+          gcc-toolset-13-libatomic-devel \
+          gcc-toolset-13-libgccjit \
+          gcc-toolset-13-libgccjit-devel \
+          gcc-toolset-13-libgccjit-docs \
+          gcc-toolset-13-libitm-devel \
+          gcc-toolset-13-liblsan-devel \
+          gcc-toolset-13-libquadmath-devel \
+          gcc-toolset-13-libstdc++-devel \
+          gcc-toolset-13-libtsan-devel \
+          gcc-toolset-13-libubsan-devel \
+          gcc-toolset-13-runtime
+      if: matrix.os == 'almalinux8'
+
+    - name: Set up RPM build environment
+      run: |
+        rpmdev-setuptree
+        cp /etc/pam.d/screen ~/rpmbuild/SOURCES/screen.pam
+        wget https://ftp.gnu.org/gnu/screen/screen-5.0.0.tar.gz -P ~/rpmbuild/SOURCES/
+        cp $GITHUB_WORKSPACE/screen.spec ~/rpmbuild/SPECS/
+
+    - name: Build RPM for EL9
+      run: |
+        mkdir -p /home/screentmp
+        chmod 1777 /home/screentmp
+        export TMPDIR=/home/screentmp
+        export PATH=/opt/rh/autoconf271/bin:$PATH
+        source /opt/rh/gcc-toolset-13/enable
+        rpmbuild -ba ~/rpmbuild/SPECS/screen.spec
+      if: matrix.os == 'almalinux9'
+
+    - name: Build RPM for EL8
+      run: |
+        mkdir -p /home/screentmp
+        chmod 1777 /home/screentmp
+        export TMPDIR=/home/screentmp
+        export PATH=/usr/bin:$PATH
+        source /opt/rh/gcc-toolset-13/enable
+        rpmbuild -ba ~/rpmbuild/SPECS/screen.spec
+      if: matrix.os == 'almalinux8'
+
+    - name: Upload RPM
+      uses: actions/upload-artifact@v3
+      with:
+        name: screen-rpm-${{ matrix.os }}
+        path: ~/rpmbuild/RPMS/x86_64/screen-*.rpm

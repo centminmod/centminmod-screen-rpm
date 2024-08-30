@@ -28,6 +28,12 @@ jobs:
       run: |
         docker pull ${{ matrix.os }}
         docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ${{ matrix.os }} /bin/bash -c "
+          dnf install -y epel-release &&
+          if [[ ${{ matrix.os }} == 'almalinux:8' ]]; then
+            dnf config-manager --set-enabled powertools;
+          else
+            dnf config-manager --set-enabled crb;
+          fi &&
           dnf groupinstall 'Development Tools' -y &&
           dnf install -y \
             rpmdevtools \
@@ -54,7 +60,7 @@ jobs:
             gcc-toolset-13-libstdc++-devel \
             gcc-toolset-13-libtsan-devel \
             gcc-toolset-13-libubsan-devel \
-            gcc-toolset-13-runtime &&
+            gcc-toolset-13-runtime --skip-broken &&
           rpmdev-setuptree &&
           cp /etc/pam.d/screen ~/rpmbuild/SOURCES/screen.pam &&
           wget https://ftp.gnu.org/gnu/screen/screen-5.0.0.tar.gz -P ~/rpmbuild/SOURCES/ &&
